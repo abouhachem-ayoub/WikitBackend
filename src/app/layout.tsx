@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
@@ -11,8 +11,6 @@ const poppins = Poppins({
   weight:['400','500','700','900'],
   style:['italic','normal']
 })
-
-
 
 export const metadata: Metadata = {
   title: "WikiTime",

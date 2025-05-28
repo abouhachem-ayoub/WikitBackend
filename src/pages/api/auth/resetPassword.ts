@@ -1,12 +1,11 @@
 import jwt from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
-import nodemailer from 'nodemailer';
+import nodemailer, { SentMessageInfo } from 'nodemailer';
 import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
 import cors, { runMiddleware } from '@/../utils/cors';
 
 
-const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
-var transporter = nodemailer.createTransport({
+let transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'abouhachemayoub@gmail.com',
@@ -50,14 +49,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 async function sendVerificationEmail(email: string, link: string) {
-  var mailOptions = {
+  let mailOptions = {
     from: 'abouhachemayoub@gmail.com',
     to: email,
     subject: 'WikiTime - Verify your email',
     text: 'reset your password by clicking the link: ' + link,
     html: `<p>Click <a href="${link}">here</a> to verify your email.</p>`,
   };
-  transporter.sendMail(mailOptions, (error:any, info:any) =>{
+  transporter.sendMail(mailOptions, (error:Error|null, info:SentMessageInfo) =>{
     if (error) {
       console.log(error);
     } else {

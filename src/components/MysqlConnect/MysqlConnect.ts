@@ -15,6 +15,7 @@ const executeQuery = async(query:string,data : string[])=>{
         return  JSON.parse(JSON.stringify(result));
     }
     catch(error){
+        console.log(error);
         return null;
     }
 }

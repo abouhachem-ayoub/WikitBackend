@@ -3,8 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import GitHubProvider from "next-auth/providers/github";
-import {JWT} from 'next-auth/jwt';
-import {Session} from 'next-auth'
+
 export default NextAuth({
   providers: [
     CredentialsProvider({
