@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 var nodemailer = require('nodemailer');
 import { createTransport } from "nodemailer";
+import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
 import cors, { runMiddleware } from '@/../utils/cors';
 
 
@@ -26,10 +27,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   try {
     // Check if the email already exists
-    const password = await executeQuery(
+   /* const password = await executeQuery(
       "SELECT password FROM userInfo WHERE email = ?",
       [email]
-    );
+    );*/
+
+    const result = await readData({email:email});
+    const password = result[0].password;
 
     if (password.length < 0) {
       return res.status(400).json({ message: "Something went wrong, try again later or contact the website admin!" });

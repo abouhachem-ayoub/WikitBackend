@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 var nodemailer = require('nodemailer');
 import { createTransport } from "nodemailer";
 import cors, { runMiddleware } from '@/../utils/cors';
+import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
 
 
 const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
@@ -26,10 +27,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   try {
     // Check if the email already exists
-    const existingUser = await executeQuery(
+    /*const existingUser = await executeQuery(
       "SELECT email FROM userInfo WHERE email = ?",
       [email]
-    );
+    );*/
+
+    const existingUser = await readData({email:email});
 
     if (existingUser.length < 0) {
       return res.status(400).json({ message: "Something went wrong, try again later or contact the website admin!" });

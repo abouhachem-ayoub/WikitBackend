@@ -4,6 +4,7 @@ import executeQuery from "@/components/MysqlConnect/MysqlConnect";
 import { parse } from "path";
 import jwt from "jsonwebtoken";
 import cors, { runMiddleware } from '@/../utils/cors';
+import { getUser, readData } from "@/components/FirebaseQueries/FirebaseConnect";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await runMiddleware(req, res, cors);
@@ -30,21 +31,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   try {
    
-    const userId = parseInt(user_id as string, 10); // Convert to a number if needed
-        if (isNaN(userId)) {
-        return res.status(400).json({ message: "Invalid user ID" });
-        }
-    const result = await executeQuery(
+    const userId = user_id?.toString()
+    console.log('user id is : ',userId)
+    /*const result = await executeQuery(
       "SELECT email, emailVerified, firstName, lastName, pseudo,password,phoneNumber FROM userInfo WHERE userId = ?",
         [userId]
-    );
+    );*/
+    const result = await getUser(userId||'');
     console.log("Query result:", result);
     console.log(user_id);
-
-    if (result.length === 0) {
+    if (!result) {
       return res.status(404).json({ message: "User not found" });
     }
-    return res.status(200).json(result[0]);
+    return res.status(200).json(result);
   } catch (error) {
     console.error("Error fetching user data:", error);
     return res.status(500).json({ message: "Internal server error" });

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import executeQuery from "@/components/MysqlConnect/MysqlConnect";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
+import insertData,{readData} from "@/components/FirebaseQueries/FirebaseConnect";
 import cors, { runMiddleware } from '@/../utils/cors';
 const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
 function encryptPassword(password: string): string {
@@ -23,27 +24,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: "The fields are required" });
   }
   try {
-    const result3 = await executeQuery(
+    /*const result3 = await executeQuery(
       "select email from userInfo where email = ?",
       [email]
-    );
+    );*/
+
+    const result3 = await readData({email:email})
     // Query the database for the user
     if(result3.length ===0){
-          const result = await executeQuery(
+          /*const result = await executeQuery(
           "insert into userInfo(firstName,lastName,email,pseudo,password,phoneNumber) values(?,?,?,?,?,?)",
           [firstName,lastName,email,pseudo,encryptPassword(password),phone]
-          );
-          if (result === null || result.affectedRows === 0) {
+          );*/
+
+          const result = await insertData({
+            firstName:firstName,
+            lastName:lastName,
+            email:email,
+            pseudo:pseudo,
+            password:encryptPassword(password),
+            phone:phone,
+            emailVerified: null
+          })
+          if (result === null || result.length === 0) {
               return res.status(401).json({ message: "something went wrong" });
               }
           else{
-            console.log(result);
-            const result2 = await executeQuery(
+            //console.log(result);
+            /*const result2 = await executeQuery(
               "select * from  userInfo where email = ?",
               [email]
-            );
+            );*/
+              const result2 = await readData({email:email});
               const token = jwt.sign(
-                  { email: result2[0].email, isVerified: result2[0].isVerified, userId : result2[0].userId },
+                  { email: result2[0].email, isVerified: result2[0].emailVerified, userId : result2[1]},
                   process.env.NEXTAUTH_SECRET!,
                   { expiresIn: "1h" },
                 );
@@ -51,12 +65,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }}
 
     else{
-      const result2 = await executeQuery(
+      /*const result2 = await executeQuery(
         "select * from  userInfo where email = ?",
         [email]
-      );
+      );*/
+      const result2 = await readData({email:email})
       const token = jwt.sign(
-        { email: result2[0].email, isVerified: result2[0].isVerified, userId : result2[0].userId },
+        { email: result2[0].email, isVerified: result2[0].isVerified, userId : result2[1] },
         process.env.NEXTAUTH_SECRET!,
         { expiresIn: "1h" },
       );

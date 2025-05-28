@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import executeQuery from "@/components/MysqlConnect/MysqlConnect";
-import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 import cors, { runMiddleware } from '@/../utils/cors';
+import { updateData } from "@/components/FirebaseQueries/FirebaseConnect";
 const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await runMiddleware(req, res, cors);
@@ -28,10 +28,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: "The fields are required" });
   }
   try {
-    const result = await executeQuery(
+    /*const result = await executeQuery(
       "update userInfo set firstName=?, lastName=? ,pseudo=?, phoneNumber=? where userId = ?",
       [firstName,lastName,pseudo,phone,userid]
-    );
+    );*/
+    const result = await updateData(userid,[
+      'firstName',
+      'lastName',
+      'pseudo',
+      'phone'
+    ],[firstName,lastName,pseudo,phone]);
     if(!result){
             return res.status(400).json({ message: "Something went wrong!"});
     }

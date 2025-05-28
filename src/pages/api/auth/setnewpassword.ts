@@ -3,6 +3,7 @@ import executeQuery from "@/components/MysqlConnect/MysqlConnect";
 import jwt from "jsonwebtoken";
 import crypto from 'crypto';
 import cors, { runMiddleware } from '@/../utils/cors';
+import { readData, updateData } from "@/components/FirebaseQueries/FirebaseConnect";
 const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
 function encryptPassword(password: string): string {
     const iv = crypto.randomBytes(16);
@@ -26,12 +27,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { email } = decoded;
     console.log("Decoded email:", email);
     
-    const result = await executeQuery(
+   /* const result = await executeQuery(
       "UPDATE userInfo SET password = ? WHERE email = ?",
       [encryptPassword(password), email]
-    );
-    
-    if (result.affectedRows === 0) {
+    );*/
+    const temp = await readData({email:email});
+    console.log('temp' ,temp);
+    const userid = temp[1];
+    console.log('userid',userid);
+    const result = await updateData(userid,['password'],[encryptPassword(password)]);
+    console.log('result ',result);
+    if (!result) {
       return res.status(404).json({ message: "User not found" });
     }        
     return res.status(200).json({ redirectUrl: "http://localhost:5173/" });

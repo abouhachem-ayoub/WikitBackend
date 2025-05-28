@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import executeQuery from "@/components/MysqlConnect/MysqlConnect";
 import jwt from "jsonwebtoken";
+import { readData, updateData } from "@/components/FirebaseQueries/FirebaseConnect";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -21,22 +22,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log("Decoded email:", email);
 
     // Update the user's emailVerified status in the database
-    const result = await executeQuery(
+    /*const result = await executeQuery(
       "UPDATE userInfo SET emailVerified = ? WHERE email = ?",
       [new Date().toISOString().slice(0, 19).replace('T', ' '), email]
-    );
+    );*/
+    const temp = await readData({email:email});
+    const userid = temp[1];
+    const result = updateData(userid,[
+      'emailVerified'],[new Date().toISOString().slice(0, 19).replace('T', ' ')])
     
-    if (result.affectedRows === 0) {
+    if (!result) {
       return res.status(404).json({ message: "User not found" });
     }
-    const result2 = await executeQuery(
+    /*const result2 = await executeQuery(
         "Select userId from userInfo WHERE email = ?",
         [email]
-      );
+      );*/
+      const result2 = await readData({email:email})
         if (result2.length < 0) {
             return res.status(400).json({ message: "Something went wrong, try again later or contact the website admin!" });
         }
-        const userId = result2[0].userId;
+        const userId = result2[1];
         return res.redirect(302, `http://localhost:5173/wikit/`);
 
   } catch (error) {
