@@ -1,0 +1,15 @@
+create table userInfo 
+( userId int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ firstName VARCHAR(255) NOT NULL,
+lastName VARCHAR(255) NOT NULL, 
+pseudo VARCHAR(255) NOT NULL,
+email VARCHAR(255) NOT NULL,
+emailVerified TIMESTAMP,  
+emailValidation ENUM('approved','inProgress','aspiring') ,
+password VARCHAR(255) NOT NULL,
+phoneNumber VARCHAR(255),
+title ENUM('user','editor','headmaster', 'chairmaster'),
+totalJobsApproved int,
+totalJobsRejected int,
+mastery BOOLEAN,
+UNIQUE(userId,pseudo,email));
