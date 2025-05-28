@@ -53,7 +53,7 @@ export const readData = async(tosend:{email?:string,pseudo?:string})=>{
     throw new Error("Either email or pseudo must be provided.");
   }
 const querySnapshot = await getDocs(q);
-let sendback:Array<UserInfo & { id: string }>=[]
+const sendback:Array<UserInfo & { id: string }>=[]
 querySnapshot.forEach((doc) => {
     console.log(doc.id, " => ", doc.data());
     sendback.push({ ...doc.data(), id: doc.id } as UserInfo & { id: string });

@@ -5,7 +5,7 @@ import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
 import cors, { runMiddleware } from '@/../utils/cors';
 
 
-let transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'abouhachemayoub@gmail.com',
@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 async function sendVerificationEmail(email: string, link: string) {
-  let mailOptions = {
+  const mailOptions = {
     from: 'abouhachemayoub@gmail.com',
     to: email,
     subject: 'WikiTime - Verify your email',
