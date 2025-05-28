@@ -1,6 +1,6 @@
 'use server'
 import mysql,{ ConnectionOptions } from 'mysql2/promise';
-const executeQuery = async(query:string,data : any[])=>{
+const executeQuery = async(query:string,data : string[])=>{
     try {
         const access: ConnectionOptions = {
             host:process.env.MYSQL_HOST,

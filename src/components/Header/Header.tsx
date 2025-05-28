@@ -26,21 +26,21 @@ const Header = () => {
         <nav className="container mx-auto flex items-center justify-between py-4 px-6">
           {/* Logo */}
           <div className="text-2xl font-bold">
-            <a href="/" className="hover:text-gray-300">WikiTime</a>
+            <Link href={"/"}>WikiTime</Link>
           </div>
           {/* Navigation Links */}
           <ul className="hidden md:flex space-x-6">
             <li>
-              <a href="#home" className="hover:text-gray-300">Home</a>
+              <Link href={"/"}>Home</Link>
             </li>
             <li>
-              <a href="#about" className="hover:text-gray-300">About</a>
+              <Link href={"/"}>About</Link>
             </li>
             <li>
-              <a href="#services" className="hover:text-gray-300">Services</a>
+            <Link href={"/"}></Link>
             </li>
             <li>
-              <a href="#contact" className="hover:text-gray-300">Contact</a>
+            <Link href={"/"}></Link>
             </li>
           </ul>
 
@@ -70,7 +70,8 @@ const Header = () => {
         <nav className="container mx-auto flex items-center justify-between py-4 px-6">
           {/* Logo */}
           <div className="text-2xl font-bold">
-            <a href="/" className="hover:text-gray-300">WikiTime</a>
+            <Link href={"/"}>WikiTime</Link>
+
           </div>
 
           {/* Navigation Links */}

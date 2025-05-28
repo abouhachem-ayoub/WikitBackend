@@ -3,6 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import GitHubProvider from "next-auth/providers/github";
+import {JWT} from 'next-auth/jwt';
+import {Session} from 'next-auth'
 export default NextAuth({
   providers: [
     CredentialsProvider({
@@ -35,16 +37,21 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async session({ session, token }:{session: any, token: any}) {
-      session.user = token.user;
+    async session({ session, token }) {
+      session.user = token.user; // Use the extended `user` field
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.user = user;
+        token.user = {
+          id: user.id || "", // Ensure `id` is set (default to an empty string if undefined)
+          email: user.email || "",
+          name: user.name || "",
+          image: user.image || "",
+        };
       }
       return token;
-    },
+    }
   },
   pages: {
     signIn: "/login",

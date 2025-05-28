@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { token } = req.body;
-  var userId = '';
+  let userId = '';
   if (!token) {
     console.log('no token found')
     return res.status(400).json({ message: "User not found" });

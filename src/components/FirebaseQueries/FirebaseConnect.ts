@@ -1,7 +1,20 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { collection, addDoc,getDocs,getDoc  ,query, where,updateDoc,doc,FieldPath} from "firebase/firestore"; 
-import { send } from "node:process";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs, 
+  getDoc, 
+  query, 
+  where, 
+  updateDoc, 
+  doc, 
+  Query, 
+  DocumentData 
+} from "firebase/firestore";
+
+type UserInfo =
+  {firstName:string,lastName:string,email:string,phone:string,password:string,pseudo:string,emailVerified?:string|null}
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -17,32 +30,34 @@ const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
 
-const insertData = async(data:any)=>{
+const insertData = async(data:UserInfo)=>{
 try {
     const docRef = await addDoc(collection(db, "userInfo"), data);
     //console.log("Document written with ID: ", docRef.id);
     return  JSON.parse(JSON.stringify(docRef));
-
   } catch (e) {
     console.error("Error adding document: ", e);
     return null;
   }
 }
-export const readData = async(tosend:any)=>{
+export const readData = async(tosend:{email?:string,pseudo?:string})=>{
     try{
-    var q:any;
+    let q :Query<DocumentData>;    
     if(tosend.email){
          q = query(collection(db, "userInfo"), where("email", "==", tosend.email));
     }
     else if(tosend.pseudo){
       q = query(collection(db, "userInfo"), where("email", "==", tosend.pseudo));
     }
+  else {
+    throw new Error("Either email or pseudo must be provided.");
+  }
 const querySnapshot = await getDocs(q);
-var sendback:any=[]
+var sendback:Array<UserInfo & { id: string }>=[]
 querySnapshot.forEach((doc) => {
     console.log(doc.id, " => ", doc.data());
-    sendback= [...sendback,doc.data(),doc.id];
-});
+    sendback.push({ ...doc.data(), id: doc.id } as UserInfo & { id: string });
+  });
 return JSON.parse(JSON.stringify(sendback));
 }
 catch(error){
@@ -51,7 +66,7 @@ catch(error){
 }
 }
 
-export const updateData = async (id: string, names: string[], values: any[]) => {
+export const updateData = async (id: string, names: string[], values: (string|number|boolean|null)[]) => {
   try {
     // Ensure names and values have the same length
     if (names.length !== values.length) {
@@ -59,7 +74,7 @@ export const updateData = async (id: string, names: string[], values: any[]) => 
     }
 
     // Create an object with field names and their corresponding values
-    const updateFields: Record<string, any> = {};
+    const updateFields: Record<string, string|number|boolean|null> = {};
     names.forEach((name, index) => {
       updateFields[name] = values[index];
     });
