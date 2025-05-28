@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import executeQuery from "@/components/MysqlConnect/MysqlConnect";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 import insertData,{readData} from "@/components/FirebaseQueries/FirebaseConnect";

@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import cors, { runMiddleware } from '@/../utils/cors';
-const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
 const secret = process.env.NEXTAUTH_SECRET;
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await runMiddleware(req, res, cors);

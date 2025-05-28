@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import executeQuery from "@/components/MysqlConnect/MysqlConnect";
 import jwt from "jsonwebtoken";
 import crypto from 'crypto';
 import cors, { runMiddleware } from '@/../utils/cors';

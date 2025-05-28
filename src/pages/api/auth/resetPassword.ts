@@ -1,8 +1,6 @@
-import executeQuery from "@/components/MysqlConnect/MysqlConnect";
 import jwt from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 var nodemailer = require('nodemailer');
-import { createTransport } from "nodemailer";
 import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
 import cors, { runMiddleware } from '@/../utils/cors';
 

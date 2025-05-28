@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import executeQuery from "@/components/MysqlConnect/MysqlConnect";
 import jwt from "jsonwebtoken";
 import cors, { runMiddleware } from '@/../utils/cors';
 import { updateData } from "@/components/FirebaseQueries/FirebaseConnect";
-const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await runMiddleware(req, res, cors);
   if (req.method !== "POST") {

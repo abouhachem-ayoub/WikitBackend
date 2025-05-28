@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import executeQuery from "@/components/MysqlConnect/MysqlConnect"; 
 import cors, { runMiddleware } from '@/../utils/cors';
 import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
-const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
-const secret = process.env.NEXTAUTH_SECRET;
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await runMiddleware(req, res, cors);
   if (req.method !== "POST") {

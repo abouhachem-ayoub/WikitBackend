@@ -1,10 +1,8 @@
 'use server';
 import { NextApiRequest, NextApiResponse } from "next";
-import executeQuery from "@/components/MysqlConnect/MysqlConnect";
-import { parse } from "path";
 import jwt from "jsonwebtoken";
 import cors, { runMiddleware } from '@/../utils/cors';
-import { getUser, readData } from "@/components/FirebaseQueries/FirebaseConnect";
+import { getUser } from "@/components/FirebaseQueries/FirebaseConnect";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await runMiddleware(req, res, cors);
