@@ -8,8 +8,8 @@ import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'abouhachemayoub@gmail.com',
-    pass: 'tsavhjkfwyikgwey'
+    user: process.env.EMAIL_SENDER,
+    pass: process.env.EMAIL_PASSWORD
   }
 });
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
