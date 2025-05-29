@@ -13,6 +13,27 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" }, // Security header
         ],
       },
+      {
+        source: "/api/auth/:path*", // Match all API routes
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "*" }, // Allow all origins (adjust as needed)
+          { key: "Access-Control-Allow-Methods", value: "GET, POST, PUT, DELETE, OPTIONS" }, // Allowed HTTP methods
+          { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization" }, // Allowed headers
+          { key: "Access-Control-Allow-Credentials", value: "true" }, // Allow credentials
+          { key: "X-Content-Type-Options", value: "nosniff" }, // Security header
+        ],
+      },
+      {
+        source: "/api/user/:path*", // Match all API routes
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "*" }, // Allow all origins (adjust as needed)
+          { key: "Access-Control-Allow-Methods", value: "GET, POST, PUT, DELETE, OPTIONS" }, // Allowed HTTP methods
+          { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization" }, // Allowed headers
+          { key: "Access-Control-Allow-Credentials", value: "true" }, // Allow credentials
+          { key: "X-Content-Type-Options", value: "nosniff" }, // Security header
+        ],
+      },
+
     ];
   },
 };
