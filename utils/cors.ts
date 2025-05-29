@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 // Initialize the CORS middleware
 const cors = Cors({
-  origin: ['http://localhost:5173'], // Replace with your allowed origins
+  origin: ['https://wikitime-frontend-fofj4vd2r-abouhachem-ayoubs-projects.vercel.app'], // Replace with your allowed origins
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
   credentials: true, // Allow cookies or credentials
