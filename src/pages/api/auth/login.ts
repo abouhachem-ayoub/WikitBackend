@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       process.env.NEXTAUTH_SECRET!,
       { expiresIn: "1h" },
     );
-    return res.status(200).json({ message: "Login successful", token:token,user_id:result[1]});
+    return res.status(200).json({ message: "Login successful", token:token,user_id:result[1],user:result[0]});
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({ message: "Internal server error" });
