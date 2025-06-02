@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
 import cors, { runMiddleware } from "@/../utils/cors";
 import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await runMiddleware(req, res, cors);
@@ -38,18 +39,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 async function sendVerificationEmail(email: string, link: string) {
-  const transporter = nodemailer.createTransport({
-    port: 465,
+  const transporter = nodemailer.createTransport(
+    new SMTPTransport({
     host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
+      type:'OAuth2',
       user: process.env.EMAIL_SENDER,
-      pass: process.env.EMAIL_PASSWORD,
       clientId:process.env.EMAIL_CLIENT_ID,
       clientSecret:process.env.EMAIL_SECRET,
       refreshToken:process.env.EMAIL_REFRESH_TOKEN
     },
-    secure: true,
-  });
+  }));
 
   // Verify the connection configuration
   await new Promise((resolve, reject) => {
