@@ -45,11 +45,8 @@ async function sendVerificationEmail(email: string, link: string) {
     port: 465,
     secure: true,
     auth: {
-      type:'OAuth2',
-      user: process.env.EMAIL_SENDER,
-      clientId:process.env.EMAIL_CLIENT_ID,
-      clientSecret:process.env.EMAIL_SECRET,
-      refreshToken:process.env.EMAIL_REFRESH_TOKEN
+      user: process.env.EMAIL_SENDER, // Your Gmail address
+      pass: process.env.EMAIL_PASSWORD,
     },
   }));
 
