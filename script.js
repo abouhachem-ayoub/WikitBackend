@@ -1,8 +1,8 @@
 const { google } = require("googleapis");
 
 // Replace with your client ID and client secret
-const CLIENT_ID = "938483265338-0cc5g2ifrcnf79cej5i7fn5i58unu9j6.apps.googleusercontent.com";
-const CLIENT_SECRET = "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";
+const CLIENT_ID = process.env.EMAIL_CLIENT_ID
+const CLIENT_SECRET = process.env.EMAIL_SECRET
 const REDIRECT_URI = "https://developers.google.com/oauthplayground"; // Use Google's OAuth Playground
 
 // Create an OAuth2 client
