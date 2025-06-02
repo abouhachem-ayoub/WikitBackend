@@ -26,10 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       [new Date().toISOString().slice(0, 19).replace('T', ' '), email]
     );*/
     const temp = await readData({email:email});
-    const userid = temp[1];
+    const userid = temp[0].id;
+    console.log(userid);
     const result = updateData(userid,[
-      'emailVerified'],[new Date().toISOString().slice(0, 19).replace('T', ' ')])
-    
+      'emailVerified'],[new Date().toISOString().slice(0, 19).replace('T', ' ')]);
     if (!result) {
       return res.status(404).json({ message: "User not found" });
     }
