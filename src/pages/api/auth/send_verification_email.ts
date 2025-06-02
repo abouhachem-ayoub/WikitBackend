@@ -44,9 +44,9 @@ async function sendVerificationEmail(email: string, link: string) {
     auth: {
       user: process.env.EMAIL_SENDER,
       pass: process.env.EMAIL_PASSWORD,
-      clientId:process.env.EMAIL_CLIENT_ID'938483265338-0cc5g2ifrcnf79cej5i7fn5i58unu9j6.apps.googleusercontent.com',
-      clientSecret:process.env.EMAIL_SECRET'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',
-      refreshToken:process.env.EMAIL_REFRESH_TOKEN'1//03gzjsrSr1eDOCgYIARAAGAMSNwF-L9IriEELA3XFb_KFRtSGVfGUUElRvirkv1A5voYzCxhhLskpgQ9y4k5F5ezou5C5NJjjS4c'
+      clientId:process.env.EMAIL_CLIENT_ID,
+      clientSecret:process.env.EMAIL_SECRET,
+      refreshToken:process.env.EMAIL_REFRESH_TOKEN
     },
     secure: true,
   });
