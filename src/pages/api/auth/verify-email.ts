@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (result2.length < 0) {
             return res.status(400).json({ message: "Something went wrong, try again later or contact the website admin!" });
         }
-        return res.redirect(302, `http://localhost:5173/wikit/`);
+        return res.redirect(302, `https://wikitime-frontend.vercel.app/`);
 
   } catch (error) {
     console.error("Verification error:", error);
