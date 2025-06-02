@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       'lastName',
       'pseudo',
       'phone'
-    ],[firstName,lastName,pseudo,phone]);
+    ],[firstName,lastName,pseudo,phone||'']);
     if(!result){
             return res.status(400).json({ message: "Something went wrong!"});
     }
