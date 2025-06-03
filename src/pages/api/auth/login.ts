@@ -12,9 +12,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { email, password,allowpasswordless} = req.body;
-
-  if ((!email || (!password||!allowpasswordless))) {
+  if(!allowpasswordless){
+  if ((!email || !password)) {
     return res.status(400).json({ message: "Email and password are required" });
+    }
   }
   if(allowpasswordless){
     try{
