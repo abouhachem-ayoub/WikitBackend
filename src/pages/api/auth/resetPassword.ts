@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
    
    
     const token = jwt.sign({ email }, process.env.NEXTAUTH_SECRET!, { expiresIn: "1h" });
-    const verificationLink = process.env.NEXT_PUBLIC_BASE_URL+`?resetPassword=true&token=${token}`;
+    const verificationLink = process.env.FRONT_END+`?resetPassword=true&token=${token}`;
     await sendVerificationEmail(email, verificationLink);
     return res.status(201).json({ message: "sucess" });
   } catch (error) {
