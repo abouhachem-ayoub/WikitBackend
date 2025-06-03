@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
-import nodemailer, { SentMessageInfo } from 'nodemailer';
+import nodemailer from 'nodemailer';
 import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
 import cors, { runMiddleware } from '@/../utils/cors';
 import SMTPTransport from "nodemailer/lib/smtp-transport";
