@@ -3,15 +3,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import nodemailer, { SentMessageInfo } from 'nodemailer';
 import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
 import cors, { runMiddleware } from '@/../utils/cors';
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'abouhachemayoub@gmail.com',
-    pass: 'tsavhjkfwyikgwey'
-  }
-});
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await runMiddleware(req, res, cors);
   if (req.method !== "POST") {
@@ -39,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
    
    
     const token = jwt.sign({ email }, process.env.NEXTAUTH_SECRET!, { expiresIn: "1h" });
-    const verificationLink = `http://localhost:5173?resetPassword=true&token=${token}`;
+    const verificationLink = process.env.NEXT_PUBLIC_BASE_URL+`?resetPassword=true&token=${token}`;
     await sendVerificationEmail(email, verificationLink);
     return res.status(201).json({ message: "sucess" });
   } catch (error) {
@@ -48,21 +41,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 }
 
+
 async function sendVerificationEmail(email: string, link: string) {
-  const mailOptions = {
-    from: 'abouhachemayoub@gmail.com',
-    to: email,
-    subject: 'WikiTime - Verify your email',
-    text: 'reset your password by clicking the link: ' + link,
-    html: `<p>Click <a href="${link}">here</a> to verify your email.</p>`,
-  };
-  transporter.sendMail(mailOptions, (error:Error|null, info:SentMessageInfo) =>{
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
+  const transporter = nodemailer.createTransport(
+    new SMTPTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_SENDER, // Your Gmail address
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  }));
+
+  await new Promise((resolve, reject) => {
+    transporter.verify((error, success) => {
+      if (error) {
+        console.error("Error verifying transporter:", error);
+        reject(error);
+      } else {
+        console.log("Server is ready to take our messages");
+        resolve(success);
+      }
+    });
   });
-  // Use a library like Nodemailer or an email service like SendGrid
-  console.log(`Sent password reset to ${email} with link: ${link}`);
+
+  const mailOptions = {
+    from: process.env.EMAIL_SENDER,
+    to: email,
+    subject: "WikiTime - Reset your password",
+    text: `You can reset your password by clicking the link: ${link}`,
+    html: `<p>Click <a href="${link}">here</a> to reset your password.</p>`,
+  };
+
+  // Send the email
+  await new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        reject(error);
+      } else {
+        console.log("Email sent:", info.response);
+        resolve(info);
+      }
+    });
+  });
 }
