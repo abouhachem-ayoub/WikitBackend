@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );*/
     const temp = await readData({email:email});
     console.log('temp' ,temp);
-    const userid = temp[1];
+    const userid = temp[0].id;
     console.log('userid',userid);
     const result = await updateData(userid,['password'],[encryptPassword(password)]);
     console.log('result ',result);
