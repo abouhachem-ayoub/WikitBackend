@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(200).json({ message: "Login successful", token:token,user_id:result[0].id,user:JSON.stringify(result[0])});
     }
     catch(error){
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error"+error});
 
     }
   }
