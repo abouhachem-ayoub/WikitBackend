@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             );*/
               const result2 = await readData({email:email});
               const token = jwt.sign(
-                  { email: result2[0].email, isVerified: result2[0].emailVerified, userId : result2[1]},
+                  { email: result2[0].email, isVerified: result2[0].emailVerified, userId : result2[0].id},
                   process.env.NEXTAUTH_SECRET!,
                   { expiresIn: "1h" },
                 );
@@ -70,7 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       );*/
       const result2 = await readData({email:email})
       const token = jwt.sign(
-        { email: result2[0].email, isVerified: result2[0].isVerified, userId : result2[1] },
+        { email: result2[0].email, isVerified: result2[0].isVerified, userId : result2[0].id },
         process.env.NEXTAUTH_SECRET!,
         { expiresIn: "1h" },
       );

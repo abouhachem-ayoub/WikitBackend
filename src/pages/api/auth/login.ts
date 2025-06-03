@@ -11,10 +11,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { email, password } = req.body;
+  const { email, password,allowpasswordless} = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
+  }
+  if(allowpasswordless){
+    try{
+      const result = await readData({email:email});
+
+      if (result.length === 0) {
+        return res.status(401).json({ message: "This email is not registered." });
+      }
+      const token = jwt.sign(
+        { email: result[0].email, isVerified: result[0].emailVerified, userId : result[0].id },
+        process.env.NEXTAUTH_SECRET!,
+        { expiresIn: "1h" },
+      );
+      return res.status(200).json({ message: "Login successful", token:token,user_id:result[0].id,user:JSON.stringify(result[0])});
+    }
+    catch(error){
+      return res.status(500).json({ message: "Internal server error" });
+
+    }
   }
   try {
     console.log("Received credentials:", { email, password });
