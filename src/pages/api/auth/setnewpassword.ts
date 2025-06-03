@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!result) {
       return res.status(404).json({ message: "User not found" });
     }        
-    return res.status(200).json({ redirectUrl: "http://localhost:5173/" });
+    return res.status(200).json({ redirectUrl: process.env.FRONT_END});
 
   } catch (error) {
     console.error("Reset error:", error);
