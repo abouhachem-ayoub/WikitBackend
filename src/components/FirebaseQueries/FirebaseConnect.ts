@@ -12,6 +12,10 @@ import {
   Query, 
   DocumentData 
 } from "firebase/firestore";
+import {deleteDoc, setDoc, Timestamp } from "firebase/firestore";
+import { getAuth, deleteUser } from "firebase/auth";
+
+
 
 type UserInfo =
   {firstName:string,lastName:string,email:string,phone:string,password:string,pseudo:string,emailVerified?:string|null}
@@ -29,6 +33,35 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
+
+export const deleteAccount = async (userId: string) => {
+  try {
+    // Mark the account as deleted in Firestore
+    const userRef = doc(db, "userInfo", userId);
+    await setDoc(userRef, {
+      deleted: true,
+      deletedAt: Timestamp.now(),
+    }, { merge: true });
+
+    // Delete the user's authentication account
+    // there could be some mistake here, we will check it out
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user && user.uid === userId) {
+      await deleteUser(user);
+    }
+
+    // Optionally, delete the user's Firestore document
+    // await deleteDoc(userRef);
+
+    console.log("Account deleted successfully for userId:", userId);
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    throw new Error("Failed to delete account");
+  }
+};
+
 
 const insertData = async(data:UserInfo)=>{
 try {
