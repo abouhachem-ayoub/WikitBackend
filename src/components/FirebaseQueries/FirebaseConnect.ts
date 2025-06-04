@@ -45,11 +45,11 @@ export const deleteAccount = async (userId: string) => {
 
     // Delete the user's authentication account
     // there could be some mistake here, we will check it out
-    const auth = getAuth();
+    /*const auth = getAuth();
     const user = auth.currentUser;
     if (user && user.uid === userId) {
       await deleteUser(user);
-    }
+    }*/
 
     // Optionally, delete the user's Firestore document
     // await deleteDoc(userRef);
