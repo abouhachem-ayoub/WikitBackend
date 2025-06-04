@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { email, password, phone, firstName,lastName,pseudo} = req.body;
+  const { email, password, phone, firstName,lastName,pseudo,emailVerified} = req.body;
 
   if (!email || !pseudo) {
     return res.status(400).json({ message: "The fields are required" });
@@ -35,16 +35,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           "insert into userInfo(firstName,lastName,email,pseudo,password,phoneNumber) values(?,?,?,?,?,?)",
           [firstName,lastName,email,pseudo,encryptPassword(password),phone]
           );*/
-
-          const result = await insertData({
-            firstName:firstName,
-            lastName:lastName,
-            email:email,
-            pseudo:pseudo,
-            password:encryptPassword(password),
-            phone:phone,
-            emailVerified: null
-          })
+      let toInsert;
+      if(!emailVerified){
+        toInsert = {
+        firstName:firstName,
+        lastName:lastName,
+        email:email,
+        pseudo:pseudo,
+        password:encryptPassword(password),
+        phone:phone,
+        emailVerified: null
+      }}
+      else {
+        toInsert = {
+          firstName:firstName,
+          lastName:lastName,
+          email:email,
+          pseudo:pseudo,
+          password:encryptPassword(password),
+          phone:phone,
+          emailVerified: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
+      }
+          const result = await insertData(
+            toInsert
+          );
           if (result === null || result.length === 0) {
               return res.status(401).json({ message: "something went wrong" });
               }
