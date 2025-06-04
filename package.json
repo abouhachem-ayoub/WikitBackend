@@ -13,6 +13,7 @@
     "camel-case": "^5.0.0",
     "cors": "^2.8.5",
     "firebase": "^11.7.1",
+    "firebase-admin": "^13.4.0",
     "googleapis": "^149.0.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.1",

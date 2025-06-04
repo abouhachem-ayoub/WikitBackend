@@ -10,13 +10,22 @@ import {
   updateDoc, 
   doc, 
   Query, 
-  DocumentData 
+  DocumentData
 } from "firebase/firestore";
+import { deleteDoc } from "firebase/firestore";
 import { setDoc, Timestamp } from "firebase/firestore";
 //import { getAuth, deleteUser } from "firebase/auth";
+import admin from "firebase-admin";
 
-
-
+const deleteUserByEmail = async (email: string) => {
+  try {
+    const userRecord = await admin.auth().getUserByEmail(email);
+    await admin.auth().deleteUser(userRecord.uid);
+    console.log(`User with email ${email} deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  }
+};
 type UserInfo =
   {firstName:string,lastName:string,email:string,phone:string,password:string,pseudo:string,emailVerified?:string|null}
 
@@ -36,12 +45,34 @@ const db = getFirestore(app);
 
 export const deleteAccount = async (userId: string) => {
   try {
-    // Mark the account as deleted in Firestore
+    // Fetch the user's data from the "userInfo" collection
     const userRef = doc(db, "userInfo", userId);
-    await setDoc(userRef, {
-      deleted: true,
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      throw new Error("User not found");
+    }
+
+    const userData = userSnap.data();
+
+    // Move the user's email, ID, and deletion timestamp to the "deletedUsers" collection
+    const deletedUserRef = doc(db, "deletedUsers", userId);
+    await setDoc(deletedUserRef, {
+      email: userData.email,
+      id: userId,
       deletedAt: Timestamp.now(),
-    }, { merge: true });
+    });
+
+    // Delete the user's document from the "userInfo" collection
+    await deleteDoc(userRef);
+    await deleteUserByEmail(userData.email)
+    console.log("Account deleted successfully for userId:", userId);
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    throw new Error("Failed to delete account");
+  }
+};
 
     // Delete the user's authentication account
     // there could be some mistake here, we will check it out
@@ -51,16 +82,6 @@ export const deleteAccount = async (userId: string) => {
       await deleteUser(user);
     }*/
 
-    // Optionally, delete the user's Firestore document
-    // await deleteDoc(userRef);
-
-    console.log("Account deleted successfully for userId:", userId);
-    return { success: true };
-  } catch (error) {
-    console.error("Error deleting account:", error);
-    throw new Error("Failed to delete account");
-  }
-};
 
 
 const insertData = async(data:UserInfo)=>{
