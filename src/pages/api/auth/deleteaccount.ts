@@ -1,9 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { deleteAccount } from "@/components/FirebaseQueries/FirebaseConnect";
 import jwt from "jsonwebtoken";
+import cors, { runMiddleware } from '@/../utils/cors';
+
 const secret = process.env.NEXTAUTH_SECRET;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    await runMiddleware(req, res, cors);
   if (req.method !== "DELETE") {
     return res.status(405).json({ message: "Method not allowed" });
   }
