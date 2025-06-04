@@ -24,8 +24,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Call the deleteAccount function
     await deleteAccount(userId);
     res.status(200).json({ message: "Account deleted successfully" });
-  } catch (error: any) {
+  } catch (error:unknown) {
+    if(error instanceof Error){
     console.error("Error deleting account:", error);
-    res.status(500).json({ message: error.message || "Failed to delete account" });
+    res.status(500).json({ message: error.message || "Failed to delete account" });}
+    else{
+        console.log('unkown error :',error);
+        res.status(500).json({ message: "An unknown error occurred" });
+    }
   }
 }

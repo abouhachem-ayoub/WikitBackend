@@ -12,7 +12,7 @@ import {
   Query, 
   DocumentData 
 } from "firebase/firestore";
-import {deleteDoc, setDoc, Timestamp } from "firebase/firestore";
+import { setDoc, Timestamp } from "firebase/firestore";
 import { getAuth, deleteUser } from "firebase/auth";
 
 
