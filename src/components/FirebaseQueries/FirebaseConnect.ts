@@ -12,20 +12,10 @@ import {
   Query, 
   DocumentData
 } from "firebase/firestore";
+import { adminAuth } from "./FirebaseAdmin";
 import { deleteDoc } from "firebase/firestore";
 import { setDoc, Timestamp } from "firebase/firestore";
 //import { getAuth, deleteUser } from "firebase/auth";
-import admin from "firebase-admin";
-
-const deleteUserByEmail = async (email: string) => {
-  try {
-    const userRecord = await admin.auth().getUserByEmail(email);
-    await admin.auth().deleteUser(userRecord.uid);
-    console.log(`User with email ${email} deleted successfully.`);
-  } catch (error) {
-    console.error("Error deleting user:", error);
-  }
-};
 type UserInfo =
   {firstName:string,lastName:string,email:string,phone:string,password:string,pseudo:string,emailVerified?:string|null}
 
@@ -42,7 +32,16 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
-
+const deleteUserByEmail = async (email: string) => {
+  try {
+    const userRecord = await adminAuth.getUserByEmail(email);
+    await adminAuth.deleteUser(userRecord.uid);
+    console.log(`User with email ${email} deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error("Failed to delete user");
+  }
+};
 export const deleteAccount = async (userId: string) => {
   try {
     // Fetch the user's data from the "userInfo" collection
@@ -74,13 +73,6 @@ export const deleteAccount = async (userId: string) => {
   }
 };
 
-    // Delete the user's authentication account
-    // there could be some mistake here, we will check it out
-    /*const auth = getAuth();
-    const user = auth.currentUser;
-    if (user && user.uid === userId) {
-      await deleteUser(user);
-    }*/
 
 
 
