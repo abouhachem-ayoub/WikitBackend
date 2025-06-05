@@ -22,7 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const checkEligibility = await canRegisterOrLogin(email);
   if(!checkEligibility.allowed){
     return res.status(401).json({ message: checkEligibility.message });
-
   }
   if(allowpasswordless){
     try{
