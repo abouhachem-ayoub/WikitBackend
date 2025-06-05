@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 import cors, { runMiddleware } from '@/../utils/cors';
-import { readData } from "@/components/FirebaseQueries/FirebaseConnect";
+import { readData,canRegisterOrLogin } from "@/components/FirebaseQueries/FirebaseConnect";
 const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,10 +12,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { email, password,allowpasswordless} = req.body;
+
+
   if(!allowpasswordless){
   if ((!email || !password)) {
     return res.status(400).json({ message: "Email and password are required" });
     }
+  }
+  const checkEligibility = await canRegisterOrLogin(email);
+  if(!checkEligibility.allowed){
+    return res.status(401).json({ message: checkEligibility.message });
+
   }
   if(allowpasswordless){
     try{

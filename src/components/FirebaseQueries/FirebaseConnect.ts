@@ -147,4 +147,31 @@ export const getUser = async (id: string) => {
   }
 };
 
+export const canRegisterOrLogin = async (email: string) => {
+  try {
+    // Query the "deletedUsers" collection for the user's email
+    const deletedUserRef = query(collection(db, "deletedUsers"), where("email", "==", email));
+    const querySnapshot = await getDocs(deletedUserRef);
+    if (!querySnapshot.empty) {
+      const deletedUser = querySnapshot.docs[0].data();
+      const deletedAt = deletedUser.deletedAt.toDate();
+      const now = new Date();
+
+      // Check if 24 hours have passed since the account was deleted
+      const diffInHours = (now.getTime() - deletedAt.getTime()) / (1000 * 60 * 60);
+      if (diffInHours < 24) {
+        const remainingHours = Math.ceil(24 - diffInHours);
+        return {
+          allowed: false,
+          message: `You cannot register or log in with this account for another ${remainingHours} hour(s).`,
+        };
+      }
+    }
+
+    return { allowed: true };
+  } catch (error) {
+    console.error("Error checking registration/login eligibility:", error);
+    throw new Error("Failed to check registration/login eligibility");
+  }
+};
 export default insertData;

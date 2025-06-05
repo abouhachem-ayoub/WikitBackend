@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
-import insertData,{readData} from "@/components/FirebaseQueries/FirebaseConnect";
+import insertData,{readData,canRegisterOrLogin} from "@/components/FirebaseQueries/FirebaseConnect";
 import cors, { runMiddleware } from '@/../utils/cors';
 const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
 function encryptPassword(password: string): string {
@@ -22,12 +22,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!email || !pseudo) {
     return res.status(400).json({ message: "The fields are required" });
   }
+
+
   try {
     /*const result3 = await executeQuery(
       "select email from userInfo where email = ?",
       [email]
     );*/
+    const checkEligibility = await canRegisterOrLogin(email);
+    if(!checkEligibility.allowed){
+      return res.status(401).json({ message: checkEligibility.message });
 
+    }
     const result3 = await readData({email:email})
     // Query the database for the user
     if(result3.length ===0){
