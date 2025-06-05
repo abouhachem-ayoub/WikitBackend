@@ -32,7 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const checkEligibility = await canRegisterOrLogin(email);
     if(!checkEligibility.allowed){
       return res.status(401).json({ message: checkEligibility.message });
-
     }
     const result3 = await readData({email:email})
     // Query the database for the user
