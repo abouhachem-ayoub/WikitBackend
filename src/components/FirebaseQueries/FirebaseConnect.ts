@@ -82,7 +82,7 @@ export const readData = async(tosend:{email?:string,pseudo?:string})=>{
          q = query(collection(db, "userInfo"), where("email", "==", tosend.email));
     }
     else if(tosend.pseudo){
-      q = query(collection(db, "userInfo"), where("email", "==", tosend.pseudo));
+      q = query(collection(db, "userInfo"), where("pseudo", "==", tosend.pseudo));
     }
   else {
     throw new Error("Either email or pseudo must be provided.");
