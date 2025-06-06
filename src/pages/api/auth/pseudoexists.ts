@@ -15,8 +15,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     //const result = await executeQuery('SELECT * FROM userInfo WHERE pseudo = ?', [pseudo]);
     const result = await readData({pseudo:pseudo});
-    
-    if (result.length ===0){
+    console.log('result:',result);
+    if (result.length === 0){
         return res.status(200).json({ message: "available",exists:false})
     }
     else {
