@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 import cors, { runMiddleware } from '@/../utils/cors';
-import { readData,canRegisterOrLogin } from "@/components/FirebaseQueries/FirebaseConnect";
+import { readData,canRegisterOrLogin,updateData } from "@/components/FirebaseQueries/FirebaseConnect";
 const key = Buffer.from("MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=", "base64");
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -26,9 +26,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if(allowpasswordless){
     try{
       const result = await readData({email:email});
-
       if (result.length === 0) {
         return res.status(401).json({ message: "This email is not registered." });
+      }
+      // Check if the user is verified
+      if (result[0].emailVerified === null) {
+        //update the userverified status to current time
+        const currentTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        await updateData(result[0].id, ['emailVerified'], [currentTime]);
       }
       const token = jwt.sign(
         { email: result[0].email, isVerified: result[0].emailVerified, userId : result[0].id },
