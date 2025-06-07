@@ -38,9 +38,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('result ',result);
     if (!result) {
       return res.status(404).json({ message: "User not found" });
-    }        
-    return res.status(200).json({ redirectUrl: process.env.FRONT_END});
+    }
+    
+    //add login logic here to set the user as logged in
 
+    // Generate a new token for the user
+        const token2 = jwt.sign(
+          { email: temp[0].email, isVerified: temp[0].emailVerified, userId : temp[0].id },
+          process.env.NEXTAUTH_SECRET!,
+          { expiresIn: "1h" },
+        );
+    //send the user to the front end with a success message
+    return res.status(200).json({ message: "Password reset successful", token: token2, user_id: temp[0].id });
   } catch (error) {
     console.error("Reset error:", error);
     return res.status(400).json({ message: "Something went wrong!" });
