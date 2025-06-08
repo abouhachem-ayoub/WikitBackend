@@ -75,7 +75,7 @@ try {
     return null;
   }
 }
-export const readData = async(tosend:{email?:string,pseudo?:string})=>{
+export const readData = async(tosend:{email?:string,pseudo?:string,id?:string})=>{
     try{
     let q :Query<DocumentData>;    
     if(tosend.email){
@@ -84,7 +84,10 @@ export const readData = async(tosend:{email?:string,pseudo?:string})=>{
     else if(tosend.pseudo){
       q = query(collection(db, "userInfo"), where("pseudo", "==", tosend.pseudo));
     }
-  else {
+  else if(tosend.id){
+    q = query(collection(db, "userInfo"), where("id", "==", tosend.id));
+  }
+  else{ 
     throw new Error("Either email or pseudo must be provided.");
   }
 const querySnapshot = await getDocs(q);
