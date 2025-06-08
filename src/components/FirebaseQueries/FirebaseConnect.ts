@@ -84,9 +84,16 @@ export const readData = async(tosend:{email?:string,pseudo?:string,id?:string})=
     else if(tosend.pseudo){
       q = query(collection(db, "userInfo"), where("pseudo", "==", tosend.pseudo));
     }
-  else if(tosend.id){
-    q = query(collection(db, "userInfo",tosend.id));
-  }
+    else if (tosend.id) {
+      const docRef = doc(db, "userInfo", tosend.id); // Reference the document by its ID
+      const docSnap = await getDoc(docRef); // Fetch the document
+      if (docSnap.exists()) {
+        return [{ ...docSnap.data(), id: docSnap.id }]; // Return the document data with its ID
+      } else {
+        console.log("No such document!");
+        return []; // Return an empty array if the document doesn't exist
+      }
+    }
   else{ 
     throw new Error("Either email or pseudo must be provided.");
   }
