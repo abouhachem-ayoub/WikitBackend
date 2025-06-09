@@ -17,8 +17,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: "Method not allowed" });
   }
   const { password,userId } = req.body;
-  const { token } = req.query;  
-  if (!password || !userId) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Authorization token is missing or invalid" });
+  }
+
+  const token = authHeader.split(" ")[1];
+    if (!password || !userId) {
     return res.status(400).json({ message: "Something went wrong, try again later!" });
   }
   try {
