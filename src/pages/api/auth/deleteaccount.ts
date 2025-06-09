@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const token = req.headers.authorization?.split(" ")[1]; 
-  const {password} = req.body;
+  const {password,pseudo,confirmPhrase} = req.body;
   // Extract the token
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -33,6 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                if (result.length === 0) {
                  return res.status(401).json({ message: "Could not perform this operation, try again or contact admin!" });
                }
+               if(password) {
                   // Decrypt the stored password
                     const ivCiphertext = Buffer.from(result[0].password, "base64");
                     const iv = ivCiphertext.subarray(0, 16);
@@ -49,7 +50,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Call the deleteAccount function
     await deleteAccount(userId);
-    res.status(200).json({ message: "Account deleted successfully" });
+    res.status(200).json({ message: "Account deleted successfully" });}
+    else if(confirmPhrase && pseudo){
+        if(confirmPhrase !== "delete my account" || pseudo !== result[0].pseudo){
+            return res.status(401).json({ message: "Incorrect confirmation phrase or pseudo." });
+        }
+        // Call the deleteAccount function
+        await deleteAccount(userId);
+        res.status(200).json({ message: "Account deleted successfully" });
+    }
+    else {
+        return res.status(400).json({ message: "Please provide either a password or confirmation phrase and pseudo." });
+    }
   } catch (error:unknown) {
     if(error instanceof Error){
     console.error("Error deleting account:", error);
