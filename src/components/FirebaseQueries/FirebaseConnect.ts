@@ -157,6 +157,31 @@ export const getUser = async (id: string) => {
   }
 };
 
+
+export const deleteUserFromDeletedUsers = async (email: string): Promise<void> => {
+  try {
+    // Query the `deletedUsers` collection for the document with the matching email
+    const deletedUserQuery = query(collection(db, "deletedUsers"), where("email", "==", email));
+    const querySnapshot = await getDocs(deletedUserQuery);
+
+    if (!querySnapshot.empty) {
+      // Get the document ID of the first matching document
+      const docId = querySnapshot.docs[0].id;
+
+      // Delete the document from the `deletedUsers` collection
+      const docRef = doc(db, "deletedUsers", docId);
+      await deleteDoc(docRef);
+
+      console.log(`Deleted user with email: ${email} from deletedUsers collection.`);
+    } else {
+      console.log(`No user found in deletedUsers collection with email: ${email}`);
+    }
+  } catch (error) {
+    console.error("Error deleting user from deletedUsers:", error);
+    throw new Error("Failed to delete user from deletedUsers.");
+  }
+};
+
 export const canRegisterOrLogin = async (email: string) => {
   try {
     // Query the "deletedUsers" collection for the user's email
@@ -175,6 +200,11 @@ export const canRegisterOrLogin = async (email: string) => {
           allowed: false,
           message: `You cannot register or log in with this account for another ${remainingHours} hour(s).`,
         };
+      }
+      else{
+        // If more than 24 hours have passed, allow registration/login
+        await deleteUserFromDeletedUsers(email); // Clean up the deleted user record
+        return { allowed: true };
       }
     }
 
