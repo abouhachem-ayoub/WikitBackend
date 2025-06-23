@@ -195,7 +195,6 @@ export const canRegisterOrLogin = async (email: string) => {
       // Check if 1 month have passed since the account was deleted
       const diffInHours = (now.getTime() - deletedAt.getTime()) / (1000 * 24 * 30 * 60 * 60);
       if (diffInHours < 24*30) {
-        const remainingHours = Math.ceil(24 - diffInHours);
         await deleteUserFromDeletedUsers(email); // Clean up the deleted user record
         return {
           allowed: true,
