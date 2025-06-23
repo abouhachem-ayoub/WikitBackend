@@ -81,7 +81,7 @@ async function sendVerificationEmail(email: string, link: string) {
         console.error("Error sending email:", error);
         reject(error);
       } else {
-        console.log("Email sent:"+(new Date()).toDateString(), info.response);
+        console.log("Email sent:"+new Date().toISOString().slice(0, 19).replace('T', ' '), info.response);
         resolve(info);
       }
     });
