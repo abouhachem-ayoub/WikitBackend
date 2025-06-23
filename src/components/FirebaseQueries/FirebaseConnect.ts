@@ -55,8 +55,8 @@ export const deleteAccount = async (userId: string) => {
     });
 
     // Delete the user's document from the "userInfo" collection
-    await deleteDoc(userRef);
-    await deleteUserByEmail(userData.email)
+    //await deleteDoc(userRef);
+    //await deleteUserByEmail(userData.email)
     console.log("Account deleted successfully for userId:", userId);
     return { success: true };
   } catch (error) {
@@ -192,19 +192,21 @@ export const canRegisterOrLogin = async (email: string) => {
       const deletedAt = deletedUser.deletedAt.toDate();
       const now = new Date();
 
-      // Check if 24 hours have passed since the account was deleted
-      const diffInHours = (now.getTime() - deletedAt.getTime()) / (1000 * 60 * 60);
-      if (diffInHours < 24) {
+      // Check if 1 month have passed since the account was deleted
+      const diffInHours = (now.getTime() - deletedAt.getTime()) / (1000 * 24 * 30 * 60 * 60);
+      if (diffInHours < 24*30) {
         const remainingHours = Math.ceil(24 - diffInHours);
+        await deleteUserFromDeletedUsers(email); // Clean up the deleted user record
         return {
-          allowed: false,
-          message: `You cannot register or log in with this account for another ${remainingHours} hour(s).`,
+          allowed: true,
         };
       }
       else{
         // If more than 24 hours have passed, allow registration/login
-        await deleteUserFromDeletedUsers(email); // Clean up the deleted user record
-        return { allowed: true };
+        await deleteUserByEmail(email);
+        return { allowed: false 
+          , message: "Your account has been permenantly deleted, you have to create a new one."
+        };
       }
     }
 
