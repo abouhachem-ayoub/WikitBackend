@@ -9,22 +9,23 @@ function encryptPassword(password: string): string {
     const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
     const encryptedPassword = Buffer.concat([cipher.update(password, "utf-8"), cipher.final()]);
     const ivCiphertext = Buffer.concat([iv, encryptedPassword]);
-    return ivCiphertext.toString("base64");
-  }
+        return ivCiphertext.toString("base64");
+    }
+  
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     await runMiddleware(req, res, cors);
     if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
-  const { password,token } = req.body;
-  if (!password || typeof password !== "string" || !token || typeof token !=='string') {
+  //const { password,token } = req.body;
+  const { email, password } = req.body as { email: string; password: string };
+  if (!password || typeof password !== "string" ||!email || typeof email !=="string" )//|| !token || typeof token !=='string') {
     return res.status(400).json({ message: "Invalid password or token" });
-  }
   try {
-    const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as { email: string };
-    const { email } = decoded;
-    console.log("Decoded email:", email);
+    //const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as { email: string };
+    //const { email } = decoded;
+    //console.log("Decoded email:", email);
     
    /* const result = await executeQuery(
       "UPDATE userInfo SET password = ? WHERE email = ?",
