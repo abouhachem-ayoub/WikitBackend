@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import cors, { runMiddleware } from '@/../utils/cors';
-
+import cors,{ runMiddleware } from '@/../utils/cors';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Handle case where query is undefined during build time
   await runMiddleware(req, res, cors);
