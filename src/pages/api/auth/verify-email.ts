@@ -1,31 +1,30 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import jwt from "jsonwebtoken";
 import { readData, updateData } from "@/components/FirebaseQueries/FirebaseConnect";
-
-
-
+import { getAuth } from 'firebase-admin/auth';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { token } = req.query;
+  const { oobCode } = req.query;
 
-  if (!token || typeof token !== "string") {
+  if (!oobCode || typeof oobCode !== "string") {
     return res.status(400).json({ message: "Invalid token" });
   }
 
   try {
-    // Verify the token
-    const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as { email: string };
-    const { email } = decoded;
-    console.log("Decoded email:", email);
-    
-    // Update the user's emailVerified status in the database
-    /*const result = await executeQuery(
-      "UPDATE userInfo SET emailVerified = ? WHERE email = ?",
-      [new Date().toISOString().slice(0, 19).replace('T', ' '), email]
-    );*/
+    const auth = getAuth();
+    const { oobCode, email } = req.query;
+
+    if (!email || typeof email !== "string" || !oobCode || typeof oobCode !== "string") {
+      // If email is not provided, you may need to look it up another way.
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    // Get the user by email and set emailVerified to true
+    const userRecord = await auth.getUserByEmail(email);
+    await auth.updateUser(userRecord.uid, { emailVerified: true });
+
     const temp = await readData({email:email});
     const userid = temp[0].id;
     console.log(userid);
