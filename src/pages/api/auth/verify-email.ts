@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { oobCode } = req.query;
+  const { oobCode,email } = req.query;
 
   if (!oobCode || typeof oobCode !== "string") {
     return res.status(400).json({ message: "Invalid token" });
@@ -14,8 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const auth = getAuth();
-    const { oobCode, email } = req.query;
-
     if (!email || typeof email !== "string" || !oobCode || typeof oobCode !== "string") {
       // If email is not provided, you may need to look it up another way.
       return res.status(400).json({ message: "Email is required" });
