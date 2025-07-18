@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { email, password,allowpasswordless} = req.body;
+  const { email, password,allowpasswordless,preVerified} = req.body;
   if(!allowpasswordless){
   if ((!email || !password)) {
     return res.status(400).json({ message: "Email and password are required" });
@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).json({ message: "This email is not registered." });
       }
       // Check if the user is verified
-      if (result[0].emailVerified === null) {
+      if (result[0].emailVerified === null && preVerified) {
         //update the userverified status to current time
         const currentTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
         await updateData(result[0].id, ['emailVerified'], [currentTime]);

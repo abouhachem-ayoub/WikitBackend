@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { readData, updateData } from "@/components/FirebaseQueries/FirebaseConnect";
 
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" });
@@ -19,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as { email: string };
     const { email } = decoded;
     console.log("Decoded email:", email);
-
+    
     // Update the user's emailVerified status in the database
     /*const result = await executeQuery(
       "UPDATE userInfo SET emailVerified = ? WHERE email = ?",
