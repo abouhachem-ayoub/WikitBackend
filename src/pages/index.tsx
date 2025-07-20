@@ -7,12 +7,30 @@ export default function FirebaseRedirectPage() {
   useEffect(() => {
     const { mode, oobCode, continueUrl } = router.query;
 
-    // If we have Firebase parameters, redirect to our API handler
+    // Handle email verification
     if (mode === 'verifyEmail' && oobCode && continueUrl) {
       const apiUrl = `/api/firebase-handler?mode=${mode}&oobCode=${oobCode}&continueUrl=${encodeURIComponent(continueUrl as string)}`;
       window.location.href = apiUrl;
     }
+
+    // Handle password reset
+    if (mode === 'resetPassword' && oobCode && continueUrl) {
+      const apiUrl = `/api/firebase-handler?mode=${mode}&oobCode=${oobCode}&continueUrl=${encodeURIComponent(continueUrl as string)}`;
+      window.location.href = apiUrl;
+    }
   }, [router.query]);
+
+  // Dynamic content based on mode
+  const { mode } = router.query;
+  
+  if (mode === 'resetPassword') {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <h2>Processing password reset...</h2>
+        <p>Please wait while we redirect you to reset your password.</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: '20px', textAlign: 'center' }}>
