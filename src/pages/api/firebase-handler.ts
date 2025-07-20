@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const email = url.searchParams.get('email');
       
       // Redirect to your frontend with the reset parameters
-      const frontendUrl = process.env.VITE_FRONT_END || 'http://localhost:5173';
+      const frontendUrl = process.env.FRONT_END || 'http://localhost:5173';
       return res.redirect(302, `${frontendUrl}/?oobCode=${oobCode}&email=${email}`);
     } catch (error) {
       console.error('Error processing password reset:', error);
